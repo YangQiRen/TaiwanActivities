@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yang.taiwanactivities.data.api.HttpResult
 import com.yang.taiwanactivities.data.model.GetActivityListResult
+import com.yang.taiwanactivities.data.model.Info
 import com.yang.taiwanactivities.data.repository.MainRepository
 import com.yang.taiwanactivities.util.LogCat
 import kotlinx.coroutines.CoroutineScope
@@ -14,8 +15,8 @@ import kotlinx.coroutines.withContext
 
 class MainViewModel(var mainRepository: MainRepository) : ViewModel() {
 
-    private val _getActivityListLiveData = MutableLiveData<GetActivityListResult>()
-    val getActivityListLiveData: LiveData<GetActivityListResult>
+    private val _getActivityListLiveData = MutableLiveData<List<Info>>()
+    val getActivityListLiveData: LiveData<List<Info>>
         get() = _getActivityListLiveData
 
     fun getActivityList() {
@@ -27,9 +28,7 @@ class MainViewModel(var mainRepository: MainRepository) : ViewModel() {
                     is HttpResult.Success -> {
                         if (result.data.isSuccessful) {
                             // To get Object
-                            val body = result.data.body()
-                            // Update layout here
-                            _getActivityListLiveData.postValue(body)
+                            _getActivityListLiveData.postValue(result.data.body()?.XMLHead?.Infos?.Info)
                         } else {
                             // 400 ~ 500, handle error
                         }
