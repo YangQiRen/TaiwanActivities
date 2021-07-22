@@ -1,37 +1,35 @@
 package com.yang.taiwanactivities.ui.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
 import com.yang.taiwanactivities.R
-import com.yang.taiwanactivities.data.factory.MainFactory
-import com.yang.taiwanactivities.data.repository.MainRepository
-import com.yang.taiwanactivities.ui.viewmodel.MainViewModel
-import com.yang.taiwanactivities.util.LogCat
+import com.yang.taiwanactivities.databinding.ActivityMainBinding
+
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var mainFactory: MainFactory
-    private lateinit var mainViewModel: MainViewModel
-    private lateinit var mainRepository: MainRepository
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        mainRepository = MainRepository()
-        mainFactory = MainFactory(mainRepository)
-        mainViewModel = ViewModelProvider(this, mainFactory).get(MainViewModel::class.java)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        initObserver()
-
-        mainViewModel.getActivityList()
+        setUpNavigation()
     }
 
-    private fun initObserver() {
-        mainViewModel.getActivityListLiveData.observe(this, {
-            // to get data
-            LogCat.e("Updatetime=" + it.XMLHead.Updatetime)
-        })
+    private fun setUpNavigation() {
+        val navHostFragment: NavHostFragment? =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment?
+        if (navHostFragment != null) {
+            NavigationUI.setupWithNavController(
+                binding.mBottomNav,
+                navHostFragment.getNavController()
+            )
+        }
     }
+
+
 }
