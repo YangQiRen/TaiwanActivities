@@ -7,26 +7,55 @@ android {
 
     defaultConfig {
         applicationId "com.yang.taiwanactivities"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
-
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     buildFeatures {
         viewBinding = true
+    }
+
+//    signingConfigs {
+//        keyConfig {
+//            storeFile file("../xxxxxx.keystore")
+//            storePassword "xxxxxxx"
+//            keyAlias "xxxxxxx"
+//            keyPassword "xxxxxxxxx"
+//        }
+//    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            applicationIdSuffix ".debug"
+            manifestPlaceholders = [ buildTypeSuffix: ".debug" ]
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.keyConfig
+            manifestPlaceholders = [ buildTypeSuffix: "" ]
+        }
+    }
+    applicationVariants.all {
+        variant ->
+            variant.outputs.all {
+                output ->
+                    def date = new Date()
+                    def formattedDate = date.format('yyyyMMdd')
+                    outputFileName = new File("TaiwanActivities_" + variant.versionName + "_" + formattedDate + "_" + variant.getBuildType().name + ".apk")
+            }
     }
 }
 
