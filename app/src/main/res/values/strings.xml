@@ -6,4 +6,8 @@
     <string name="map">地圖</string>
     <string name="popular">熱門</string>
     <string name="info">info</string>
+    <string name="about">關於</string>
+    <string name="confirm">確定</string>
+    <string name="review">五星評價</string>
+    <string name="about_info">Taiwan Activities App\nApp Version：%s</string>
 </resources>

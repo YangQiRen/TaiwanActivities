@@ -1,9 +1,11 @@
 package com.yang.taiwanactivities.ui.activity
 
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.yang.taiwanactivities.BuildConfig
 import com.yang.taiwanactivities.R
 import com.yang.taiwanactivities.databinding.ActivityMainBinding
 
@@ -17,7 +19,25 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setUpListener()
         setUpNavigation()
+    }
+
+    private fun setUpListener() {
+        binding.mToolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.menu_info -> {
+                    AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.about))
+                        .setMessage(getString(R.string.about_info, BuildConfig.VERSION_NAME))
+                        .setPositiveButton(getString(R.string.confirm)) { dialog, which -> dialog.dismiss() }
+                        .setNegativeButton(getString(R.string.review)) { dialog, which -> }
+                        .show()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun setUpNavigation() {
@@ -27,6 +47,5 @@ class MainActivity : AppCompatActivity() {
             NavigationUI.setupWithNavController(binding.mBottomNav, navHostFragment.navController)
         }
     }
-
 
 }
