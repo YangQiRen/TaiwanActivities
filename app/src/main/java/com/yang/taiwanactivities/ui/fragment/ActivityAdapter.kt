@@ -11,7 +11,7 @@ import com.yang.taiwanactivities.R
 import com.yang.taiwanactivities.data.model.Info
 import com.yang.taiwanactivities.util.formatToServerDateTimeDefaults
 
-class ActivityAdapter : RecyclerView.Adapter<ActivityAdapter.ActivityViewHolder>() {
+class ActivityAdapter(private val listener: ActivityViewHolderListener) : RecyclerView.Adapter<ActivityAdapter.ActivityViewHolder>() {
 
     var infoList: List<Info> = listOf()
 
@@ -22,6 +22,9 @@ class ActivityAdapter : RecyclerView.Adapter<ActivityAdapter.ActivityViewHolder>
     }
 
     override fun onBindViewHolder(holder: ActivityViewHolder, position: Int) {
+        holder.itemView.setOnClickListener {
+            listener.onActivityClicked(infoList[position])
+        }
         holder.bind(infoList[position])
     }
 
@@ -34,7 +37,11 @@ class ActivityAdapter : RecyclerView.Adapter<ActivityAdapter.ActivityViewHolder>
         notifyDataSetChanged()
     }
 
-    class ActivityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    interface ActivityViewHolderListener{
+        fun onActivityClicked(info: Info)
+    }
+
+    inner class ActivityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var ivPicture = itemView.findViewById<ImageView>(R.id.ivPicture)
         var tvTime = itemView.findViewById<TextView>(R.id.tvTime)
         var tvName = itemView.findViewById<TextView>(R.id.tvName)

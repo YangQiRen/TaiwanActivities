@@ -16,8 +16,7 @@ import kotlinx.coroutines.withContext
 class MainViewModel(var mainRepository: MainRepository) : ViewModel() {
 
     private val _getActivityListLiveData = MutableLiveData<List<Info>>()
-    val getActivityListLiveData: LiveData<List<Info>>
-        get() = _getActivityListLiveData
+    val getActivityListLiveData: LiveData<List<Info>> get() = _getActivityListLiveData
 
     fun getActivityList() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -39,5 +38,13 @@ class MainViewModel(var mainRepository: MainRepository) : ViewModel() {
                 }
             }
         }
+    }
+
+    // selectInfo 作用於 MainFragment 和 DetailFragment 之間溝通橋樑
+    private val mutableSelectedInfo = MutableLiveData<Info>()
+    val selectedInfo: LiveData<Info> get() = mutableSelectedInfo
+
+    fun selectedInfo(info: Info) {
+        mutableSelectedInfo.value = info
     }
 }
