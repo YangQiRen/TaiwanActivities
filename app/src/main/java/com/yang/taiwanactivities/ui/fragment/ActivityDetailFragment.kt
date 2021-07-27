@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.transition.TransitionInflater
 import com.squareup.picasso.Picasso
 import com.yang.taiwanactivities.R
 import com.yang.taiwanactivities.data.factory.MainFactory
@@ -27,6 +28,9 @@ class ActivityDetailFragment : Fragment() {
         mainFactory = MainFactory(mainRepository)
         mainViewModel =
             ViewModelProvider(requireActivity(), mainFactory).get(MainViewModel::class.java)
+
+//        sharedElementEnterTransition =
+//            TransitionInflater.from(context).inflateTransition(R.transition.default_transition)
     }
 
     override fun onCreateView(

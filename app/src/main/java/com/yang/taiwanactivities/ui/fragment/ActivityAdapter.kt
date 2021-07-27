@@ -11,7 +11,8 @@ import com.yang.taiwanactivities.R
 import com.yang.taiwanactivities.data.model.Info
 import com.yang.taiwanactivities.util.formatToServerDateTimeDefaults
 
-class ActivityAdapter(private val listener: ActivityViewHolderListener) : RecyclerView.Adapter<ActivityAdapter.ActivityViewHolder>() {
+class ActivityAdapter(private val infoClickListener: (View, Info, Int) -> Unit) :
+    RecyclerView.Adapter<ActivityAdapter.ActivityViewHolder>() {
 
     var infoList: List<Info> = listOf()
 
@@ -22,9 +23,6 @@ class ActivityAdapter(private val listener: ActivityViewHolderListener) : Recycl
     }
 
     override fun onBindViewHolder(holder: ActivityViewHolder, position: Int) {
-        holder.itemView.setOnClickListener {
-            listener.onActivityClicked(infoList[position])
-        }
         holder.bind(infoList[position])
     }
 
@@ -37,16 +35,16 @@ class ActivityAdapter(private val listener: ActivityViewHolderListener) : Recycl
         notifyDataSetChanged()
     }
 
-    interface ActivityViewHolderListener{
-        fun onActivityClicked(info: Info)
-    }
-
     inner class ActivityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var ivPicture = itemView.findViewById<ImageView>(R.id.ivPicture)
         var tvTime = itemView.findViewById<TextView>(R.id.tvTime)
         var tvName = itemView.findViewById<TextView>(R.id.tvName)
 
         fun bind(info: Info) {
+            itemView.setOnClickListener {
+                infoClickListener(ivPicture, infoList[adapterPosition], adapterPosition)
+            }
+
             Picasso.get().load(info.Picture1).error(R.drawable.ic_image)
                 .placeholder(R.drawable.ic_image).fit().centerCrop().into(ivPicture)
             val strTime =

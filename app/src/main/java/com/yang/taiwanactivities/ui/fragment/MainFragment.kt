@@ -24,12 +24,6 @@ class MainFragment : Fragment() {
     private lateinit var mainRepository: MainRepository
     private lateinit var binding: FragmentMainBinding
 
-    val listener = object : ActivityAdapter.ActivityViewHolderListener {
-        override fun onActivityClicked(info: Info) {
-            mainViewModel.selectedInfo(info)
-            Navigation.findNavController(binding.root).navigate(R.id.action_tab_activity_to_activityDetailFragment)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +54,13 @@ class MainFragment : Fragment() {
     private fun initObserver() {
         mainViewModel.getActivityListLiveData.observe(viewLifecycleOwner, {
             // to get data
-            val adapter = ActivityAdapter(listener)
+            val adapter = ActivityAdapter(infoClickListener = { view, info, position ->
+                infoClick(
+                    view,
+                    info,
+                    position
+                )
+            })
             if (binding.rvActivity.itemDecorationCount == 0) {
                 binding.rvActivity.addItemDecoration(
                     DividerItemDecoration(
@@ -74,6 +74,13 @@ class MainFragment : Fragment() {
             adapter.updateList(infoList = it)
 
         })
+    }
+
+    private fun infoClick(view: View, info: Info, position: Int) {
+        mainViewModel.selectedInfo(info)
+        Navigation.findNavController(binding.root)
+            .navigate(R.id.action_tab_activity_to_activityDetailFragment)
+
     }
 
 }
