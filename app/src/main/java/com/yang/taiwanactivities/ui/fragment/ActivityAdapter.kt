@@ -11,7 +11,7 @@ import com.yang.taiwanactivities.R
 import com.yang.taiwanactivities.data.model.Info
 import com.yang.taiwanactivities.util.formatToServerDateTimeDefaults
 
-class ActivityAdapter(private val infoClickListener: (View, Info, Int) -> Unit) :
+class ActivityAdapter(private val infoClickListener: (ImageView, Info, Int) -> Unit) :
     RecyclerView.Adapter<ActivityAdapter.ActivityViewHolder>() {
 
     var infoList: List<Info> = listOf()
@@ -44,6 +44,7 @@ class ActivityAdapter(private val infoClickListener: (View, Info, Int) -> Unit) 
             itemView.setOnClickListener {
                 infoClickListener(ivPicture, infoList[adapterPosition], adapterPosition)
             }
+            ivPicture.transitionName = info.Id
 
             Picasso.get().load(info.Picture1).error(R.drawable.ic_image)
                 .placeholder(R.drawable.ic_image).fit().centerCrop().into(ivPicture)

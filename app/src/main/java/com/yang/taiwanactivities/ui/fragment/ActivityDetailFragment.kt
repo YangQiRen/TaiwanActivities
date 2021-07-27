@@ -29,8 +29,8 @@ class ActivityDetailFragment : Fragment() {
         mainViewModel =
             ViewModelProvider(requireActivity(), mainFactory).get(MainViewModel::class.java)
 
-//        sharedElementEnterTransition =
-//            TransitionInflater.from(context).inflateTransition(R.transition.default_transition)
+        sharedElementEnterTransition =
+            TransitionInflater.from(context).inflateTransition(android.R.transition.move)
     }
 
     override fun onCreateView(
@@ -50,6 +50,8 @@ class ActivityDetailFragment : Fragment() {
 
     private fun initObserver() {
         mainViewModel.selectedInfo.observe(viewLifecycleOwner, { info ->
+            binding.ivPicture.transitionName = info.Id
+
             Picasso.get().load(info.Picture1).error(R.drawable.ic_image)
                 .placeholder(R.drawable.ic_image).fit().centerCrop().into(binding.ivPicture)
             val strTime =

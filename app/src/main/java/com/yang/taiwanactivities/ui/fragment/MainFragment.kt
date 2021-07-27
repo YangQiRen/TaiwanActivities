@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yang.taiwanactivities.R
@@ -54,9 +56,9 @@ class MainFragment : Fragment() {
     private fun initObserver() {
         mainViewModel.getActivityListLiveData.observe(viewLifecycleOwner, {
             // to get data
-            val adapter = ActivityAdapter(infoClickListener = { view, info, position ->
+            val adapter = ActivityAdapter(infoClickListener = { imageView, info, position ->
                 infoClick(
-                    view,
+                    imageView,
                     info,
                     position
                 )
@@ -76,11 +78,13 @@ class MainFragment : Fragment() {
         })
     }
 
-    private fun infoClick(view: View, info: Info, position: Int) {
+    private fun infoClick(imageView: ImageView, info: Info, position: Int) {
         mainViewModel.selectedInfo(info)
+        val extras = FragmentNavigatorExtras(
+            imageView to info.Id
+        )
         Navigation.findNavController(binding.root)
-            .navigate(R.id.action_tab_activity_to_activityDetailFragment)
-
+            .navigate(R.id.action_tab_activity_to_activityDetailFragment, null, null, extras)
     }
 
 }
