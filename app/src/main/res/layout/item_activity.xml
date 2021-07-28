@@ -8,6 +8,7 @@
         android:id="@+id/ivPicture"
         android:layout_width="144dp"
         android:layout_height="144dp"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

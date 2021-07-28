@@ -44,10 +44,8 @@ class ActivityAdapter(private val infoClickListener: (ImageView, Info, Int) -> U
             itemView.setOnClickListener {
                 infoClickListener(ivPicture, infoList[adapterPosition], adapterPosition)
             }
-            ivPicture.transitionName = info.Id
-
-            Picasso.get().load(info.Picture1).error(R.drawable.ic_image)
-                .placeholder(R.drawable.ic_image).fit().centerCrop().into(ivPicture)
+            ivPicture.transitionName = "image_small" + adapterPosition
+            Picasso.get().load(info.Picture1).into(ivPicture)
             val strTime =
                 info.Start.formatToServerDateTimeDefaults() + "~" + info.End.formatToServerDateTimeDefaults()
             tvTime.text = strTime

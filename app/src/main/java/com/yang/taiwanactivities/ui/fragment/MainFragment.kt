@@ -1,10 +1,9 @@
 package com.yang.taiwanactivities.ui.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -19,38 +18,31 @@ import com.yang.taiwanactivities.databinding.FragmentMainBinding
 import com.yang.taiwanactivities.ui.viewmodel.MainViewModel
 
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(R.layout.fragment_main) {
 
     private lateinit var mainFactory: MainFactory
     private lateinit var mainViewModel: MainViewModel
     private lateinit var mainRepository: MainRepository
-    private lateinit var binding: FragmentMainBinding
+    private var _binding: FragmentMainBinding? = null
+    private val binding: FragmentMainBinding get() = _binding!!
+    private var currentPosition: Int = 0
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        mainRepository = MainRepository()
-        mainFactory = MainFactory(mainRepository)
-        mainViewModel =
-            ViewModelProvider(requireActivity(), mainFactory).get(MainViewModel::class.java)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentMainBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
-
-        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_main, container, false)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
+        _binding = FragmentMainBinding.bind(view)
+        mainRepository = MainRepository()
+        mainFactory = MainFactory(mainRepository)
+        mainViewModel =
+            ViewModelProvider(requireActivity(), mainFactory).get(MainViewModel::class.java)
         initObserver()
         mainViewModel.getActivityList()
+
     }
 
     private fun initObserver() {
@@ -74,14 +66,20 @@ class MainFragment : Fragment() {
             binding.rvActivity.layoutManager = LinearLayoutManager(requireContext())
             binding.rvActivity.adapter = adapter
             adapter.updateList(infoList = it)
-
+            view?.doOnPreDraw {
+                startPostponedEnterTransition()
+            }
+        })
+        mainViewModel.selectedPosition.observe(viewLifecycleOwner, {
+            currentPosition = it
         })
     }
 
     private fun infoClick(imageView: ImageView, info: Info, position: Int) {
-        mainViewModel.selectedInfo(info)
+        mainViewModel.selectInfo(position, info)
+
         val extras = FragmentNavigatorExtras(
-            imageView to info.Id
+            imageView to "image_big"
         )
         Navigation.findNavController(binding.root)
             .navigate(R.id.action_tab_activity_to_activityDetailFragment, null, null, extras)
