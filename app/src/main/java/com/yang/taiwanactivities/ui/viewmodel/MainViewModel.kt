@@ -19,20 +19,14 @@ class MainViewModel(private var mainRepository: MainRepository) : ViewModel() {
 
     fun getActivityList() {
         CoroutineScope(Dispatchers.IO).launch {
-            val result = mainRepository.getActivityList()
 
             withContext(Dispatchers.Main) {
-                when (result) {
+                when (val result = mainRepository.getActivityList()) {
                     is HttpResult.Success -> {
-                        if (result.data.isSuccessful) {
-                            // To get Object
-                            _getActivityListLiveData.postValue(result.data.body()?.XMLHead?.Infos?.Info)
-                        } else {
-                            // 400 ~ 500, handle error
-                        }
+                            _getActivityListLiveData.postValue(result.data.XMLHead.Infos.Info)
                     }
                     is HttpResult.Error -> {
-                        LogCat.e(result.exception.toString())
+                        LogCat.e(result.message)
                     }
                 }
             }

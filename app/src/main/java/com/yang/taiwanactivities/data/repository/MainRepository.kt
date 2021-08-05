@@ -10,12 +10,17 @@ class MainRepository {
 
     private val apiService = RetrofitFactory.create(ApiService::class.java)
 
-    suspend fun getActivityList(): HttpResult<Response<GetActivityListResult>> {
+    suspend fun getActivityList(): HttpResult<GetActivityListResult> {
         return try {
-            val result = apiService.getActivityList().await()
-            HttpResult.Success(result)
+            val response = apiService.getActivityList().await()
+            val result = response.body()
+            if (response.isSuccessful && result != null) {
+                HttpResult.Success(result)
+            } else {
+                HttpResult.Error(response.message())
+            }
         } catch (e: Throwable) {
-            HttpResult.Error(e)
+            HttpResult.Error(e.message ?: "An error occured")
         }
     }
 }
