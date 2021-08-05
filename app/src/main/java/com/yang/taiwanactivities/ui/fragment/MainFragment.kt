@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import androidx.core.view.doOnPreDraw
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -47,7 +48,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun initObserver() {
         mainViewModel.getActivityListLiveData.observe(viewLifecycleOwner, {
-            // to get data
+            // 關閉loading骨骼動畫
+            binding.shimmerFrameLayout.stopShimmer()
+            binding.shimmerFrameLayout.isVisible = false
+            // setup recyclerview adapter
             val adapter = ActivityAdapter(infoClickListener = { imageView, info, position ->
                 infoClick(
                     imageView,
@@ -85,4 +89,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             .navigate(R.id.action_tab_activity_to_activityDetailFragment, null, null, extras)
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.shimmerFrameLayout.startShimmer()
+    }
+
+    override fun onPause() {
+        binding.shimmerFrameLayout.stopShimmer()
+        super.onPause()
+    }
 }
