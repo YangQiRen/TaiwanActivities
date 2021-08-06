@@ -2,17 +2,17 @@ package com.yang.taiwanactivities.data.repository
 
 import com.yang.taiwanactivities.data.api.ApiService
 import com.yang.taiwanactivities.data.api.HttpResult
-import com.yang.taiwanactivities.data.api.RetrofitFactory
 import com.yang.taiwanactivities.data.model.GetActivityListResult
-import retrofit2.Response
+import com.yang.taiwanactivities.data.repository.impl.MainRepositoryImpl
+import javax.inject.Inject
 
-class MainRepository {
+class MainRepository @Inject constructor(
+    private val api: ApiService
+) : MainRepositoryImpl {
 
-    private val apiService = RetrofitFactory.create(ApiService::class.java)
-
-    suspend fun getActivityList(): HttpResult<GetActivityListResult> {
+    override suspend fun getActivityList(): HttpResult<GetActivityListResult> {
         return try {
-            val response = apiService.getActivityList().await()
+            val response = api.getActivityList().await()
             val result = response.body()
             if (response.isSuccessful && result != null) {
                 HttpResult.Success(result)

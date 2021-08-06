@@ -6,24 +6,20 @@ import android.widget.ImageView
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yang.taiwanactivities.R
-import com.yang.taiwanactivities.data.factory.MainFactory
 import com.yang.taiwanactivities.data.model.Info
-import com.yang.taiwanactivities.data.repository.MainRepository
 import com.yang.taiwanactivities.databinding.FragmentMainBinding
 import com.yang.taiwanactivities.ui.viewmodel.MainViewModel
 
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
-    private lateinit var mainFactory: MainFactory
-    private lateinit var mainViewModel: MainViewModel
-    private lateinit var mainRepository: MainRepository
+    private val viewModel: MainViewModel by activityViewModels()
     private var _binding: FragmentMainBinding? = null
     private val binding: FragmentMainBinding get() = _binding!!
     private var currentPosition: Int = 0
@@ -37,17 +33,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
         _binding = FragmentMainBinding.bind(view)
-        mainRepository = MainRepository()
-        mainFactory = MainFactory(mainRepository)
-        mainViewModel =
-            ViewModelProvider(requireActivity(), mainFactory).get(MainViewModel::class.java)
         initObserver()
-        mainViewModel.getActivityList()
 
     }
 
     private fun initObserver() {
-        mainViewModel.getActivityListLiveData.observe(viewLifecycleOwner, {
+        viewModel.getActivityListLiveData.observe(viewLifecycleOwner, {
             // 關閉loading骨骼動畫
             binding.shimmerFrameLayout.stopShimmer()
             binding.shimmerFrameLayout.isVisible = false
@@ -74,13 +65,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 startPostponedEnterTransition()
             }
         })
-        mainViewModel.selectedPosition.observe(viewLifecycleOwner, {
+        viewModel.selectedPosition.observe(viewLifecycleOwner, {
             currentPosition = it
         })
     }
 
     private fun infoClick(imageView: ImageView, info: Info, position: Int) {
-        mainViewModel.selectInfo(position, info)
+        viewModel.selectInfo(position, info)
 
         val extras = FragmentNavigatorExtras(
             imageView to "image_big"
@@ -91,6 +82,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onResume() {
         super.onResume()
+        viewModel.getActivityList()
         binding.shimmerFrameLayout.startShimmer()
     }
 

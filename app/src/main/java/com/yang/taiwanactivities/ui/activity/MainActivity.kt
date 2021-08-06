@@ -8,8 +8,9 @@ import androidx.navigation.ui.NavigationUI
 import com.yang.taiwanactivities.BuildConfig
 import com.yang.taiwanactivities.R
 import com.yang.taiwanactivities.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
